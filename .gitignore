@@ -1,0 +1,10 @@
+.vscode/
+# VS Code java plugins cruft
+.project
+.settings
+.classpath
+bin/
+
+# Maven build output directory
+target/
+
