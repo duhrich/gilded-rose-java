@@ -6,7 +6,7 @@ public class GildedRose {
     public final String legendary = "Legendary Sulfuras, Hand of Ragnaros";
 
     public final String conjured = "Conjured Mana Cake";
-    private String name;
+    private final String name;
     private int daysRemaining;
     private int quality;
 
@@ -39,14 +39,6 @@ public class GildedRose {
         }
     }
 
-    private boolean isAged() {
-        return aged.equals(this.name);
-    }
-
-    private boolean isPass() {
-        return passes.equals(this.name);
-    }
-
     private void handleAcceleratedAging() {
         if (this.daysRemaining < 10) {
             safelyIncreaseQuality();
@@ -74,8 +66,20 @@ public class GildedRose {
         }
     }
 
+    private boolean isAged() {
+        return aged.equals(this.name);
+    }
+
+    private boolean isPass() {
+        return passes.equals(this.name);
+    }
+
     private boolean isLegendary() {
         return legendary.equals(this.name);
+    }
+
+    private boolean isConjured() {
+        return conjured.equals(this.name);
     }
 
     private void safelyIncreaseQuality() {
@@ -88,16 +92,13 @@ public class GildedRose {
         if (this.quality > 0) {
             if (!legendary.equals(this.name)) {
                 this.quality--;
-                if (this.quality > 0 && shouldDoubleDecrease()) {
+                if (this.quality > 0 && isConjured()) {
                     this.quality--;
                 }
             }
         }
     }
 
-    private boolean shouldDoubleDecrease() {
-        return conjured.equals(this.name);
-    }
 
     public String getName() {
         return name;
