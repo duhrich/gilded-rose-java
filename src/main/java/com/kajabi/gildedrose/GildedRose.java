@@ -86,7 +86,7 @@ public class GildedRose {
 
     private void safelyDecreaseQuality() {
         if (this.quality > 0) {
-            if (!this.name.equals(legendary)) {
+            if (!legendary.equals(this.name)) {
                 this.quality--;
                 if (this.quality > 0 && shouldDoubleDecrease()) {
                     this.quality--;
