@@ -16,6 +16,89 @@ public class GildedRose {
         this.quality = quality;
     }
 
+    public void tick() {
+        decreaseDaysRemaining();
+        handleNormalAging();
+        if (isExpired()) {
+            handleExpiredGoods();
+        }
+    }
+
+    private boolean isExpired() {
+        return this.daysRemaining < 0;
+    }
+
+    private void handleNormalAging() {
+        if (isAged() || isPass()) {
+            safelyIncreaseQuality();
+            if (isPass()) {
+                handleAcceleratedAging();
+            }
+        } else {
+            safelyDecreaseQuality();
+        }
+    }
+
+    private boolean isAged() {
+        return aged.equals(this.name);
+    }
+
+    private boolean isPass() {
+        return passes.equals(this.name);
+    }
+
+    private void handleAcceleratedAging() {
+        if (this.daysRemaining < 10) {
+            safelyIncreaseQuality();
+        }
+        if (this.daysRemaining < 5) {
+            safelyIncreaseQuality();
+        }
+    }
+
+    private void handleExpiredGoods() {
+        if (isAged()) {
+            safelyIncreaseQuality();
+        } else {
+            if (isPass()) {
+                this.quality = 0;
+            } else {
+                safelyDecreaseQuality();
+            }
+        }
+    }
+
+    private void decreaseDaysRemaining() {
+        if (!isLegendary()) {
+            this.daysRemaining--;
+        }
+    }
+
+    private boolean isLegendary() {
+        return legendary.equals(this.name);
+    }
+
+    private void safelyIncreaseQuality() {
+        if (this.quality < 50) {
+            this.quality++;
+        }
+    }
+
+    private void safelyDecreaseQuality() {
+        if (this.quality > 0) {
+            if (!this.name.equals(legendary)) {
+                this.quality--;
+                if (this.quality > 0 && shouldDoubleDecrease()) {
+                    this.quality--;
+                }
+            }
+        }
+    }
+
+    private boolean shouldDoubleDecrease() {
+        return conjured.equals(this.name);
+    }
+
     public String getName() {
         return name;
     }
@@ -28,60 +111,5 @@ public class GildedRose {
         return quality;
     }
 
-    public void tick() {
-        if (aged.equals(this.name) || passes.equals(this.name)) {
-             if (this.quality < 50) {
-                this.quality++;
-                if (this.name.equals(passes)) {
-                    if (this.daysRemaining < 11) {
-                        increaseQuality();
-                    }
-                    if (this.daysRemaining < 6) {
-                        increaseQuality();
-                    }
-                }
-            }
-        } else {
-            safelyDecreaseQuality(this.name);
-        }
-        decreaseDaysRemaining();
-        if (this.daysRemaining < 0) {
-            if (!this.name.equals(aged)) {
-                if (!this.name.equals(passes)) {
-                    safelyDecreaseQuality(this.name);
-                } else {
-                    this.quality = 0;
-                }
-            } else {
-                increaseQuality();
-            }
-        }
-    }
 
-    private void decreaseDaysRemaining() {
-        if (!this.name.equals(legendary)) {
-            this.daysRemaining--;
-        }
-    }
-
-    private void increaseQuality() {
-        if (this.quality < 50) {
-            this.quality++;
-        }
-    }
-
-    private void safelyDecreaseQuality(String name) {
-        if (this.quality > 0) {
-            if (!this.name.equals(legendary)) {
-                this.quality--;
-                if (this.quality > 0 && shouldDoubleDecrease(name)) {
-                    this.quality--;
-                }
-            }
-        }
-    }
-
-    private boolean shouldDoubleDecrease(String name) {
-        return name.equals(conjured);
-    }
 }
